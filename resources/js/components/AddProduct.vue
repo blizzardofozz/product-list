@@ -2,12 +2,20 @@
   <form @submit="onSubmit" class="mb-3">
     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
     <div class="mb-3">
-      <input
-        type="text"
+      <select
         class="form-control"
-        placeholder="Category Id"
+        name="category_id"
         v-model="product.category_id"
-      />
+      >
+        <option disabled value="">Please select one</option>
+        <option
+          :key="category.id"
+          v-for="category in categories"
+          :value="category.id"
+        >
+          {{ category.name }}
+        </option>
+      </select>
     </div>
     <div class="mb-3">
       <input
@@ -50,6 +58,7 @@ export default {
   name: "AddProduct",
   props: {
     product: Object,
+    categories: Array,
   },
   data() {
     return {

@@ -1,12 +1,17 @@
 <template>
   <Navbar />
   <div class="container">
-    <AddProduct :product="product" @add-product="addProduct" />
+    <AddProduct
+      :categories="categories"
+      :product="product"
+      @add-product="addProduct"
+    />
     <nav aria-label="Page navigation">
       <Pagination
-      @next-page-url="fetchProducts(pagination.next_page_url)"
-      @prev-page-url="fetchProducts(pagination.prev_page_url)"
-      :pagination="pagination" />
+        @next-page-url="fetchProducts(pagination.next_page_url)"
+        @prev-page-url="fetchProducts(pagination.prev_page_url)"
+        :pagination="pagination"
+      />
     </nav>
     <Products
       @edit-product="editProduct"
@@ -34,6 +39,7 @@ export default {
         quantity: "",
         price: "",
       },
+      categories: [],
       product_id: "",
       products: [],
       pagination: {},
@@ -54,6 +60,7 @@ export default {
       const jsonObj = await res.json();
       vm.makePagination(jsonObj.meta, jsonObj.links);
       this.products = jsonObj.data;
+      this.categories = this.products[0].categories;
     },
     async fetchProduct(id) {
       const res = await fetch(`api/products/${id}`);
@@ -113,17 +120,15 @@ export default {
         });
 
         const data = await res.json();
-
-        this.product.category_id = "";
-        this.product.sku = "";
-        this.product.name = "";
-        this.product.quantity = "";
-        this.product.price = "";
-        alert("Product Updated");
-        this.fetchProducts();
-        this.edit = false;
-        this.product_id = "";
       }
+      this.product.category_id = "";
+      this.product.sku = "";
+      this.product.name = "";
+      this.product.quantity = "";
+      this.product.price = "";
+      this.fetchProducts();
+      this.edit = false;
+      this.product_id = "";
     },
   },
   async created() {
